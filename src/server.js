@@ -1,20 +1,20 @@
 const Hapi = require('hapi');
-const Routes = require('./Routes');
 
 const server = new Hapi.Server();
-server.connection({
-  port: 3001,
-  host: 'localhost',
-});
-server.route(Routes);
 
-if (!module.parent) {
-  server.start((err) => {
-    if (err) {
-      throw (err);
-    }
-    console.log(`Server started at ${server.info.uri}`);
-  });
+server.connection({
+  host: 'localhost',
+  port: Number(8080),
+});
+
+function handleFunction(request, reply) {
+  reply('pong');
 }
 
-module.exports = server;
+server.route({ path: '/ping', method: 'GET', handler: handleFunction });
+
+server.start(() => {
+  console.log(`Server running at: ${server.info.uri}`);
+});
+
+module.exports = { handleFunction, server };
